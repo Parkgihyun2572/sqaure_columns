@@ -1,34 +1,43 @@
-const ID_ATTRIBITE = "id";
-const WITDH_ATTRIBUTE = "width";
-const HEIGHT_ATTRIBUTE = "height";
-const COLORBOX_IDNAME = "colorBox";
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
 
-//Controll box size.
+const boxSize = 50;
+const boxColors = ["red", "blue", "orange", "yellow", "skyblue", "green", "white"];
 
-const colorBoxSizeX = 50;
-const colorBoxSizeY = 50;
+function setCanvasSize() {
+    const windowSizeWidth = document.body.offsetWidth;
+    const windowSizeHeight = document.body.offsetHeight;
+    
+    canvas.width = windowSizeWidth;
+    canvas.height = windowSizeHeight;
 
-window.addEventListener("resize", handleCheckWindowSize);
-
-function handleCheckWindowSize() {
-    const stageWidth = document.body.clientWidth;
-    const stageHeight = document.body.clientHeight;
-    createColorBox(stageWidth, stageHeight);
+    return [windowSizeWidth, windowSizeHeight];
 }
 
-function createColorBox(stageWidth, stageHeight) {
-    const theNumberOfColorBoxs = Math.ceil(stageWidth / colorBoxSizeX) * Math.ceil(stageHeight / colorBoxSizeY);
-    for (let i = 0; i < theNumberOfColorBoxs; i++) {
-        const div = document.createElement("div");
+function getRandomColor(boxColors) {
+    const theNumberOfColors = boxColors.length;
+    min = 0;
+    max = theNumberOfColors;
+    return boxColors[Math.floor(Math.random() * (max - min)) + min];
+}
 
-        div.setAttribute(WITDH_ATTRIBUTE, `${colorBoxSizeX}px`);        
-        div.setAttribute(HEIGHT_ATTRIBUTE, `${colorBoxSizeY}px`);
-        div.className = "colorBox";
-        const colorBox = div;
+function makeBox(width, height, boxSize, boxColors) {
 
-        document.body.appendChild(colorBox);
+    const theNumberOfColors_X = Math.floor(width / boxSize) + 1;
+    const theNumberOfColors_Y = Math.floor(height / boxSize) + 1;
+
+    for (let x = 0; x < theNumberOfColors_X; x++) {
+        for (let y = 0; y < theNumberOfColors_Y; y++) {
+            ctx.fillStyle = getRandomColor(boxColors);
+            ctx.fillRect(boxSize*x, boxSize*y, boxSize, boxSize);
+        }
     }
 }
 
-handleCheckWindowSize();
+function appStart() {
+    const [width, height] = setCanvasSize();
+    makeBox(width, height, boxSize, boxColors);
+}
 
+window.addEventListener("load", appStart());
+window.addEventListener("resize", appStart());
